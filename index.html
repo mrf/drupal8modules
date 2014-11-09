@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Drupal 8 Module Development</title>
+
+  <meta name="description" content="Drupal 8 Module Development">
+  <meta name="author" content="Mark Ferree">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="stylesheet" href="css/reveal-custom.css">
+  <link rel="stylesheet" href="css/theme/night-custom.css" id="theme">
+
+  <!-- For syntax highlighting -->
+  <link rel="stylesheet" href="lib/css/zenburn.css">
+
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/print/pdf.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+  </script>
+
+  <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+  <div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+        <section>
+          <h2>Drupal 8 Module Development</h2>
+        </section>
+        <section>
+          <h4>http://mrf.github.io/drupal8modules</h4>
+          <h4>http://github.com/mrf/drupal8_presentation_example</h4>
+        </section>
+        <section>
+          <h2>About Me:</h2>
+          <br />
+          <h3>Mark Ferree</h3>
+          <h4>@mrf</h4>
+          <br />
+          <img src="images/c3.png" />
+        </section>
+        <section>
+          <h1>Object Oriented Basics</h1>
+        </section>
+        <section>
+          <img style="background: #fff" src="images/lambchop-class-diagram.png" />
+        </section>
+        <section>
+          <h1>BUT WHY!</h1>
+        </section>
+        <section>
+          <h3>Encapsulation</h3>
+          <img src="images/capsule.jpg" />
+          <small>http://pixabay.com/p-58177</small>
+        </section>
+        <section>
+          <h3>Polymorphism & Inheritance</h3>
+          <img height="500px" src="images/Heliconius_mimicry.png" />
+          <small>http://en.wikipedia.org/wiki/Butterfly#mediaviewer/File:Heliconius_mimicry.png</small>
+        </section>
+        <section>
+          <img src="images/Cliffjumping.jpg" />
+          <small>http://en.wikipedia.org/wiki/Diving#mediaviewer/File:Cliffjumping.jpg</small>
+        </section>
+        <section>
+          <h4>http://github.com/chapter-three/oophp-training</h4>
+        </section>
+        <section>
+          <h1>Starting With Basics</h1>
+        </section>
+        <section>
+          <h2>presentation.info.yml</h2>
+        </section>
+        <section>
+        <pre>
+          <code>
+name: Drupal 8 Module Development
+description: Example code for http://mrf.github.io/drupal8-modules
+package: Custom
+type: module
+version: 1.0
+core: 8.x
+dependencies:
+  - block
+          </code>
+        </pre>
+        </section>
+        <section>
+          <h2>presentation.module</h2>
+          <pre>
+            <code>
+<\?php
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h2>Welcome to your first brain shifting opportunity</h2>
+        </section>
+        <section>
+          <h2>Configuration Management</h2>
+        </section>
+        <section>
+          <h3>The old way</h3>
+          <pre>
+            <code>
+variable_set('presentation_seconds_to_wait', 300);
+
+variable_get('presentation_seconds_to_wait', 24 * 3600);
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h3>The NEW way</h3>
+          <pre>
+            <code>
+\Drupal::config('presentation.settings')
+  ->set('seconds_to_wait', 24 * 3600)
+  ->save();
+  
+\Drupal::config('presentation.settings')->get('seconds_to_wait');
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h2>But what about my defaults?</h2>
+        </section>
+        <section>
+          <h2>Create a directory called config</h2>
+        </section>
+        <section>
+          <h2>Create a directory called install inside config</h2>
+        </section>
+        <section>
+          <h2>Get used to creating directories, trust me...</h2>
+        </section>
+        <section>
+          <h2>Create:</h2>
+          <pre>
+            <code>
+module_name.config_object_name.optional_sub_key.yml
+            </code>
+         </pre>
+        </section>
+        <section>
+          <pre>
+            <code>
+presentation/config/install/presentation.settings.yml
+            </code>
+         </pre>
+          <pre>
+            <code>
+seconds_to_wait: 20
+            </code>
+         </pre>
+        </section>
+        <section>
+          <h2>Things to keep in mind:</h2>
+          <ul>
+            <li>Do I really need a separate config object?</li>
+            <li>Should assign config if working on it multiple times in a function</li>
+          </ul>
+
+        </section>
+        <section>
+          <ul>
+            <li>Other modules need to modify it.</li>
+            <li>My information is more complicated.</li>
+            <li>I want to serialize a bunch of things.</li>
+            <li>Thinking about a custom table in the DB to store my config.</li>
+          </ul>
+        </section>
+        <section>
+          <h2>See: Configuration Entities</h2>
+        </section>
+        <section>
+          <h1>Routes</h1>
+        </section>
+        <section>
+          <h2>The Old Way:</h2>
+          <pre>
+            <code>
+$items['presentation/callback'] = array(
+  'title' => 'My Special Callback',
+  'description' => "Arbitrary page for arbitrary reasons",
+  'page callback' => 'presentation_page_view',
+  'access arguments' => array('access content'),
+  'type' => MENU_LOCAL_TASK,
+);
+            </code>
+         </pre>
+        </section>
+        <section>
+          <h2>The New Way:</h2>
+          <pre>
+            <code>
+presentation.routing.yml
+            </code>
+            <code>
+presentation.callback:
+  path: '/presentation/callback'
+  defaults:
+    _content: '\Drupal\presentation\Controller\PresentationController::myPage'
+    _title: 'My Special Callback'
+  requirements:
+    _permission: 'access content'
+            </code>
+         </pre>
+        </section>
+        <section>
+          <pre>
+            <code>
+src/Controller/PresentationController.php
+            </code>
+          </pre>
+        </section>
+        <section>
+          <pre>
+            <code>
+/**
+ * @file
+ * Contains \Drupal\presentation\Controller\PresentationController.
+ */
+
+namespace Drupal\presentation\Controller;
+use Drupal\Core\Controller\ControllerBase;
+
+------------------------------------------------
+            </code>
+          </pre>
+        </section>
+        <section>
+          <pre>
+            <code>
+class PresentationController extends ControllerBase {
+  public function myPage() {
+    $element = array(
+      '#markup' => 'Hello, world',
+    );
+    return $element;
+  }
+}
+            </code>
+         </pre>
+        </section>
+        <section>
+          <h1>Permissions</h1>
+        </section>
+        <section>
+          <h2>The Old Way:</h2>
+          <pre>
+            <code>
+function hook_permission() {
+  return array(
+    'administer presentation' => array(
+      'title' => t('Administer presentation'),
+      'description' => t('Perform administration tasks for presentation.'),
+    ),
+  );
+}
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h2>The New Way:</h2>
+          <pre>
+            <code>
+presentation.permissions.yml
+            </code>
+            <code>
+administer presentation:
+  title: 'Administer presentation'
+  description: 'Perform administration tasks for presentation.'
+  restrict access: TRUE
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h1>Blocks</h1>
+        </section>
+        <section>
+          <h2>The Old Way:</h2>
+          <pre>
+            <code>
+function presentation_block_info() {
+  $blocks['presentation_simple'] = array(
+    'info' => t('Presentation: simple block'),
+  );
+  return $blocks;
+}
+            </code>
+          </pre>
+        </section>
+        <section>
+          <pre>
+            <code>
+function presentation_block_view($delta = '') {
+  switch ($delta) {
+    case 'presentation_simple':
+      $block['subject'] = t('Title of second block (presentation_simple)');
+      $block['content'] = "My block content";
+      break;
+  }
+  return $block;
+}
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h1>The New Way</h1>
+        </section>
+        <section>
+          <h1>Plugins</h1>
+        </section>
+        <section>
+          <pre>
+            <code>
+src/Plugin/Block/SimpleBlock.php
+            </code>
+            <code>
+/**
+ * @file
+ * Contains \Drupal\presentation\Plugin\Block\SimpleBlock.
+ */
+
+namespace Drupal\presentation\Plugin\Block;
+
+use Drupal\block\Annotation\Block;
+use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Annotation\Translation;
+            </code>
+          </pre>
+        </section>
+        <section>
+          <pre>
+            <code>
+/**
+ * Provides a 'Presentation: simple block' block.
+ *
+ * @Block(
+ *   id = "presentation_simple",
+ *   subject = @Translation("Presentation: simple block"),
+ *   admin_label = @Translation("Presentation: simple block")
+ * )
+ */
+            </code>
+          </pre>
+        </section>
+        <section>
+          <pre>
+            <code>
+class SimpleBlock extends BlockBase {
+  /**
+   * {@inheritdoc}
+   */
+  public function build() {
+    return array(
+      '#type' => 'markup',
+      '#markup' => t("My block content"),
+    );
+  }
+}
+            </code>
+          </pre>
+        </section>
+        <section>
+          <pre>
+            <code>
+src/Controller/SimpleBlockController.php
+            </code>
+            <code>
+            </code>
+         </pre>
+       </section>
+</div>
+</div>
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+// Full list of configuration options available here:
+// https://githubjcom/hakimel/reveal.js#configuration
+Reveal.initialize({
+controls: true,
+progress: true,
+history: true,
+center: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+// Parallax scrolling
+parallaxBackgroundImage: 'images/reveal-parallax-dark.jpg',
+parallaxBackgroundSize: '2100px 900px',
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+]
+});
+
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,16 @@
+Are you comfortable writing modules for Drupal 7, but a little bit nervous to find out what you'll be facing in Drupal 8? This session is for you.
+
+The topics covered should be digestible by anyone who regularly writes modules for Drupal 7, but if you are still learning the basics things might move a bit too quickly for you.
+
+I'll be covering the new concepts introduced in Drupal 8 that you will be using most frequently.
+
+The focus will be on what you NEED to know to be effective and I'll do my best to stay out of the weeds of all the other cool possibilities that Drupal 8 opens up for you.
+
+Following a quick review of Object Oriented basics I will dive into:
+
+#Configuration Management
+#Routes
+#Permissions
+#Annotations and Plugins.
+
+If you already have an existing module to convert there is https://www.drupal.org/project/drupalmoduleupgrader. In this session we will try to upgrade your brain so you can feel comfortable writing new D8 modules from scratch.
